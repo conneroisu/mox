@@ -1,5 +1,5 @@
 {
-  description = "Personal Website for Conner Ohnesorge";
+  description = "Mox - a modern full-featured open source secure mail server for low-maintenance self-hosted email";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
@@ -25,8 +25,9 @@
         config.allowUnfree = true;
       };
       buildWithSpecificGo = pkg: pkg.override {buildGoModule = pkgs.buildGo124Module;};
-    in rec {
+    in {
       devShell = let
+        scripts = {
           dx = {
             exec = ''$EDITOR $REPO_ROOT/flake.nix'';
             description = "Edit flake.nix";
@@ -84,11 +85,24 @@
               pprof
               graphviz
 
-              openssl.dev
+              tailwindcss # Web
+              tailwindcss-language-server
+              bun
+              nodePackages.typescript-language-server
+              nodePackages.prettier
+              svgcleaner
+              sqlite-web
             ]
+            ++ (with pkgs;
+              lib.optionals stdenv.isDarwin [
+              ])
+            ++ (with pkgs;
+              lib.optionals stdenv.isLinux [
+              ])
             ++ builtins.attrValues scriptPackages;
         };
 
-      packages = {};
+      packages = {
+      };
     });
 }
